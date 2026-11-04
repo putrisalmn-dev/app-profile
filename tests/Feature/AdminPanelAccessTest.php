@@ -43,4 +43,28 @@ class AdminPanelAccessTest extends TestCase
             ->get('/admin/posts/create')
             ->assertForbidden();
     }
+
+    public function test_admin_panel_renders_indonesian_translations_when_locale_is_id(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)
+            ->withSession(['locale' => 'id'])
+            ->get('/admin/posts')
+            ->assertOk()
+            ->assertSee('Konten CMS')
+            ->assertSee('Artikel');
+    }
+
+    public function test_admin_panel_renders_english_translations_when_locale_is_en(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)
+            ->withSession(['locale' => 'en'])
+            ->get('/admin/posts')
+            ->assertOk()
+            ->assertSee('CMS Content')
+            ->assertSee('Posts');
+    }
 }

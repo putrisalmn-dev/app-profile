@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\User;
+use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
@@ -35,5 +36,16 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         RateLimiter::for('questions', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch): void {
+            $switch
+                ->locales(['id', 'en'])
+                ->labels([
+                    'id' => 'Bahasa Indonesia',
+                    'en' => 'English',
+                ])
+                ->visible(outsidePanels: true)
+                ->circular();
+        });
     }
 }

@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,14 +28,17 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
-            ->brandName('CMS Profil & Layanan Masyarakat')
+            ->brandName(fn (): string => __('CMS Profile & Public Services'))
             ->colors([
                 'primary' => Color::Blue,
             ])
+            ->spa()
+            ->resourceCreatePageRedirect('index')
+            ->resourceEditPageRedirect('index')
             ->navigationGroups([
-                'Konten CMS',
-                'Pertanyaan Masyarakat',
-                'Sistem',
+                NavigationGroup::make(fn (): string => __('CMS Content')),
+                NavigationGroup::make(fn (): string => __('Public Questions')),
+                NavigationGroup::make(fn (): string => __('System')),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

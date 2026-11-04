@@ -39,66 +39,75 @@ class PostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Konten CMS';
-
-    protected static ?string $modelLabel = 'Artikel';
-
-    protected static ?string $pluralModelLabel = 'Artikel';
-
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('CMS Content');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Post');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Posts');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('Konten Artikel')
+                Section::make(__('Post Content'))
                     ->columns(2)
                     ->schema([
                         TextInput::make('title')
-                            ->label('Judul')
+                            ->label(__('Title'))
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
                         TextInput::make('slug')
-                            ->label('Slug')
+                            ->label(__('Slug'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Select::make('category_id')
-                            ->label('Kategori')
+                            ->label(__('Category'))
                             ->relationship('category', 'name')
                             ->searchable()
                             ->preload(),
                         Select::make('status')
-                            ->label('Status')
+                            ->label(__('Status'))
                             ->options(PostStatus::class)
                             ->default(PostStatus::Draft)
                             ->required(),
                         Textarea::make('summary')
-                            ->label('Ringkasan')
+                            ->label(__('Summary'))
                             ->rows(3)
                             ->columnSpanFull(),
                         RichEditor::make('content')
-                            ->label('Isi Artikel')
+                            ->label(__('Content'))
                             ->fileAttachmentsDisk('public')
                             ->fileAttachmentsDirectory('posts/attachments')
                             ->columnSpanFull(),
                     ]),
-                Section::make('Publikasi & Media')
+                Section::make(__('Publishing & Media'))
                     ->columns(2)
                     ->schema([
                         FileUpload::make('image')
-                            ->label('Gambar Unggulan')
+                            ->label(__('Featured Image'))
                             ->image()
                             ->disk('public')
                             ->directory('posts')
                             ->columnSpanFull(),
                         DateTimePicker::make('published_at')
-                            ->label('Tanggal Publikasi')
+                            ->label(__('Published Date'))
                             ->default(now()),
                         Toggle::make('is_featured')
-                            ->label('Artikel Unggulan')
+                            ->label(__('Featured Post'))
                             ->default(false),
                     ]),
             ]);
@@ -110,45 +119,45 @@ class PostResource extends Resource
             ->defaultSort('published_at', 'desc')
             ->columns([
                 ImageColumn::make('image')
-                    ->label('Gambar')
+                    ->label(__('Image'))
                     ->disk('public'),
                 TextColumn::make('title')
-                    ->label('Judul')
+                    ->label(__('Title'))
                     ->searchable()
                     ->sortable()
                     ->limit(50),
                 TextColumn::make('category.name')
-                    ->label('Kategori')
+                    ->label(__('Category'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('author.name')
-                    ->label('Penulis')
+                    ->label(__('Author'))
                     ->toggleable(),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge()
                     ->sortable(),
                 IconColumn::make('is_featured')
-                    ->label('Unggulan')
+                    ->label(__('Featured'))
                     ->boolean(),
                 TextColumn::make('view_count')
-                    ->label('Dilihat')
+                    ->label(__('Views'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('published_at')
-                    ->label('Dipublikasikan')
+                    ->label(__('Published At'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->options(PostStatus::class),
                 SelectFilter::make('category')
-                    ->label('Kategori')
+                    ->label(__('Category'))
                     ->relationship('category', 'name'),
                 TernaryFilter::make('is_featured')
-                    ->label('Unggulan'),
+                    ->label(__('Featured')),
             ])
             ->recordActions([
                 EditAction::make(),

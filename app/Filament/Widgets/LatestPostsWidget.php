@@ -16,35 +16,34 @@ class LatestPostsWidget extends TableWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Artikel Terbaru';
-
     public function table(Table $table): Table
     {
         return $table
+            ->heading(__('Latest Posts'))
             ->query(fn (): Builder => Post::query()->with(['category', 'author'])->latest()->limit(5))
             ->paginated(false)
             ->columns([
                 TextColumn::make('title')
-                    ->label('Judul')
+                    ->label(__('Title'))
                     ->limit(50),
                 TextColumn::make('category.name')
-                    ->label('Kategori')
+                    ->label(__('Category'))
                     ->badge(),
                 TextColumn::make('author.name')
-                    ->label('Penulis'),
+                    ->label(__('Author')),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextColumn::make('view_count')
-                    ->label('Dilihat')
+                    ->label(__('Views'))
                     ->numeric(),
                 TextColumn::make('published_at')
-                    ->label('Tanggal Publikasi')
+                    ->label(__('Published Date'))
                     ->dateTime(),
             ])
             ->recordActions([
                 Action::make('edit')
-                    ->label('Edit')
+                    ->label(__('Edit'))
                     ->url(fn (Post $record): string => PostResource::getUrl('edit', ['record' => $record])),
             ]);
     }

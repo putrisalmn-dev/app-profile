@@ -28,40 +28,49 @@ class FaqResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQuestionMarkCircle;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Pertanyaan Masyarakat';
-
-    protected static ?string $modelLabel = 'FAQ';
-
-    protected static ?string $pluralModelLabel = 'FAQ';
-
     protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('Public Questions');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('FAQ');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('FAQs');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Select::make('topic_id')
-                    ->label('Topik')
+                    ->label(__('Topic'))
                     ->relationship('topic', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
                 TextInput::make('sort_order')
-                    ->label('Urutan')
+                    ->label(__('Sort Order'))
                     ->numeric()
                     ->default(0)
                     ->required(),
                 TextInput::make('question')
-                    ->label('Pertanyaan')
+                    ->label(__('Question'))
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
                 RichEditor::make('answer')
-                    ->label('Jawaban')
+                    ->label(__('Answer'))
                     ->required()
                     ->columnSpanFull(),
                 Toggle::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->default(true),
             ]);
     }
@@ -73,24 +82,24 @@ class FaqResource extends Resource
             ->reorderable('sort_order')
             ->columns([
                 TextColumn::make('question')
-                    ->label('Pertanyaan')
+                    ->label(__('Question'))
                     ->searchable()
                     ->sortable()
                     ->limit(60),
                 TextColumn::make('topic.name')
-                    ->label('Topik')
+                    ->label(__('Topic'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('sort_order')
-                    ->label('Urutan')
+                    ->label(__('Sort Order'))
                     ->sortable(),
                 IconColumn::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->boolean(),
             ])
             ->filters([
                 SelectFilter::make('topic')
-                    ->label('Topik')
+                    ->label(__('Topic'))
                     ->relationship('topic', 'name'),
             ])
             ->recordActions([

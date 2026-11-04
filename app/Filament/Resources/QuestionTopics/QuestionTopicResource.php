@@ -28,44 +28,53 @@ class QuestionTopicResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Pertanyaan Masyarakat';
-
-    protected static ?string $modelLabel = 'Topik Pertanyaan';
-
-    protected static ?string $pluralModelLabel = 'Topik Pertanyaan';
-
     protected static ?int $navigationSort = 2;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('Public Questions');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Question Topic');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Question Topics');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Nama Topik')
+                    ->label(__('Topic Name'))
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
                 TextInput::make('slug')
-                    ->label('Slug')
+                    ->label(__('Slug'))
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 TextInput::make('icon')
-                    ->label('Ikon')
+                    ->label(__('Icon'))
                     ->placeholder('heroicon-o-chat-bubble-left-right')
                     ->maxLength(100),
                 TextInput::make('sort_order')
-                    ->label('Urutan')
+                    ->label(__('Sort Order'))
                     ->numeric()
                     ->default(0)
                     ->required(),
                 Textarea::make('description')
-                    ->label('Deskripsi')
+                    ->label(__('Description'))
                     ->rows(3)
                     ->columnSpanFull(),
                 Toggle::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->default(true),
             ]);
     }
@@ -77,21 +86,21 @@ class QuestionTopicResource extends Resource
             ->reorderable('sort_order')
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nama Topik')
+                    ->label(__('Topic Name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('slug')
-                    ->label('Slug'),
+                    ->label(__('Slug')),
                 TextColumn::make('questions_count')
-                    ->label('Pertanyaan')
+                    ->label(__('Questions'))
                     ->counts('questions')
                     ->sortable(),
                 TextColumn::make('faqs_count')
-                    ->label('FAQ')
+                    ->label(__('FAQ'))
                     ->counts('faqs')
                     ->sortable(),
                 IconColumn::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->boolean(),
             ])
             ->filters([

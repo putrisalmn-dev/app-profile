@@ -28,35 +28,44 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sistem';
-
-    protected static ?string $modelLabel = 'Pengguna';
-
-    protected static ?string $pluralModelLabel = 'Pengguna';
-
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('System');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('User');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Users');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Nama')
+                    ->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
-                    ->label('Email')
+                    ->label(__('Email'))
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Select::make('role')
-                    ->label('Peran')
+                    ->label(__('Role'))
                     ->options(UserRole::class)
                     ->default(UserRole::Viewer)
                     ->required(),
                 TextInput::make('password')
-                    ->label('Kata Sandi')
+                    ->label(__('Password'))
                     ->password()
                     ->revealable()
                     ->required(fn (string $operation): bool => $operation === 'create')
@@ -64,7 +73,7 @@ class UserResource extends Resource
                     ->minLength(8)
                     ->maxLength(255),
                 FileUpload::make('avatar')
-                    ->label('Foto Profil')
+                    ->label(__('Profile Photo'))
                     ->image()
                     ->avatar()
                     ->disk('public')
@@ -82,26 +91,26 @@ class UserResource extends Resource
                     ->disk('public')
                     ->circular(),
                 TextColumn::make('name')
-                    ->label('Nama')
+                    ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
-                    ->label('Email')
+                    ->label(__('Email'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('role')
-                    ->label('Peran')
+                    ->label(__('Role'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('role')
-                    ->label('Peran')
+                    ->label(__('Role'))
                     ->options(UserRole::class),
             ])
             ->recordActions([

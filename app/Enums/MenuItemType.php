@@ -17,10 +17,10 @@ enum MenuItemType: string implements HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::Page => 'Halaman',
-            self::Post => 'Artikel',
-            self::Category => 'Kategori',
-            self::Custom => 'URL Kustom',
+            self::Page => __('Page'),
+            self::Post => __('Post'),
+            self::Category => __('Category'),
+            self::Custom => __('Custom URL'),
         };
     }
 

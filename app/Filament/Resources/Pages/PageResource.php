@@ -35,54 +35,63 @@ class PageResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Konten CMS';
-
-    protected static ?string $modelLabel = 'Halaman';
-
-    protected static ?string $pluralModelLabel = 'Halaman Statis';
-
     protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('CMS Content');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Page');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Static Pages');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('Detail Halaman')
+                Section::make(__('Page Details'))
                     ->columns(2)
                     ->schema([
                         TextInput::make('title')
-                            ->label('Judul Halaman')
+                            ->label(__('Page Title'))
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
                         TextInput::make('slug')
-                            ->label('Slug')
+                            ->label(__('Slug'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Select::make('status')
-                            ->label('Status')
+                            ->label(__('Status'))
                             ->options(PageStatus::class)
                             ->default(PageStatus::Draft)
                             ->required(),
                         TextInput::make('sort_order')
-                            ->label('Urutan')
+                            ->label(__('Sort Order'))
                             ->numeric()
                             ->default(0)
                             ->required(),
                         Toggle::make('show_in_menu')
-                            ->label('Tampilkan di Menu')
+                            ->label(__('Show in Menu'))
                             ->default(false)
                             ->columnSpanFull(),
                         FileUpload::make('image')
-                            ->label('Gambar Header')
+                            ->label(__('Header Image'))
                             ->image()
                             ->disk('public')
                             ->directory('pages')
                             ->columnSpanFull(),
                         RichEditor::make('content')
-                            ->label('Isi Halaman')
+                            ->label(__('Page Content'))
                             ->fileAttachmentsDisk('public')
                             ->fileAttachmentsDirectory('pages/attachments')
                             ->columnSpanFull(),
@@ -97,30 +106,30 @@ class PageResource extends Resource
             ->reorderable('sort_order')
             ->columns([
                 TextColumn::make('title')
-                    ->label('Judul')
+                    ->label(__('Title'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('slug')
-                    ->label('Slug')
+                    ->label(__('Slug'))
                     ->searchable(),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge()
                     ->sortable(),
                 IconColumn::make('show_in_menu')
-                    ->label('Di Menu')
+                    ->label(__('In Menu'))
                     ->boolean(),
                 TextColumn::make('sort_order')
-                    ->label('Urutan')
+                    ->label(__('Sort Order'))
                     ->sortable(),
                 TextColumn::make('updated_at')
-                    ->label('Diperbarui')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->options(PageStatus::class),
             ])
             ->recordActions([

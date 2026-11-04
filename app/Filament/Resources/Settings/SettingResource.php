@@ -30,56 +30,65 @@ class SettingResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sistem';
-
-    protected static ?string $modelLabel = 'Pengaturan';
-
-    protected static ?string $pluralModelLabel = 'Pengaturan Situs';
-
     protected static ?int $navigationSort = 2;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('System');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Setting');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Site Settings');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Select::make('group')
-                    ->label('Grup')
+                    ->label(__('Group'))
                     ->options([
-                        'general' => 'Umum',
-                        'contact' => 'Kontak',
-                        'social' => 'Media Sosial',
+                        'general' => __('General'),
+                        'contact' => __('Contact'),
+                        'social' => __('Social Media'),
                     ])
                     ->default('general')
                     ->required(),
                 TextInput::make('key')
-                    ->label('Kunci (Key)')
+                    ->label(__('Key'))
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->alphaDash()
                     ->maxLength(255),
                 TextInput::make('label')
-                    ->label('Label')
+                    ->label(__('Label'))
                     ->maxLength(255),
                 Select::make('type')
-                    ->label('Tipe Nilai')
+                    ->label(__('Value Type'))
                     ->options(SettingType::class)
                     ->default(SettingType::Text)
                     ->live()
                     ->required(),
                 TextInput::make('value')
-                    ->label('Nilai')
+                    ->label(__('Value'))
                     ->visible(fn (Get $get): bool => self::typeIs($get('type'), SettingType::Text))
                     ->dehydrated(fn (Get $get): bool => self::typeIs($get('type'), SettingType::Text))
                     ->columnSpanFull(),
                 Textarea::make('value')
-                    ->label('Nilai')
+                    ->label(__('Value'))
                     ->rows(4)
                     ->visible(fn (Get $get): bool => in_array(self::normalizeType($get('type')), [SettingType::Textarea, SettingType::Json], true))
                     ->dehydrated(fn (Get $get): bool => in_array(self::normalizeType($get('type')), [SettingType::Textarea, SettingType::Json], true))
                     ->rule(fn (Get $get) => self::typeIs($get('type'), SettingType::Json) ? 'json' : null)
                     ->columnSpanFull(),
                 FileUpload::make('value')
-                    ->label('Gambar')
+                    ->label(__('Image'))
                     ->image()
                     ->disk('public')
                     ->directory('settings')
@@ -87,7 +96,7 @@ class SettingResource extends Resource
                     ->dehydrated(fn (Get $get): bool => self::typeIs($get('type'), SettingType::Image))
                     ->columnSpanFull(),
                 Toggle::make('value')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->visible(fn (Get $get): bool => self::typeIs($get('type'), SettingType::Boolean))
                     ->dehydrated(fn (Get $get): bool => self::typeIs($get('type'), SettingType::Boolean))
                     ->formatStateUsing(fn (mixed $state): bool => filter_var($state, FILTER_VALIDATE_BOOLEAN))
@@ -102,31 +111,31 @@ class SettingResource extends Resource
             ->defaultGroup('group')
             ->columns([
                 TextColumn::make('group')
-                    ->label('Grup')
+                    ->label(__('Group'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('key')
-                    ->label('Kunci')
+                    ->label(__('Key'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('label')
-                    ->label('Label')
+                    ->label(__('Label'))
                     ->searchable(),
                 TextColumn::make('type')
-                    ->label('Tipe')
+                    ->label(__('Type'))
                     ->badge(),
                 TextColumn::make('value')
-                    ->label('Nilai')
+                    ->label(__('Value'))
                     ->limit(50)
                     ->searchable(),
             ])
             ->filters([
                 SelectFilter::make('group')
-                    ->label('Grup')
+                    ->label(__('Group'))
                     ->options([
-                        'general' => 'Umum',
-                        'contact' => 'Kontak',
-                        'social' => 'Media Sosial',
+                        'general' => __('General'),
+                        'contact' => __('Contact'),
+                        'social' => __('Social Media'),
                     ]),
             ])
             ->recordActions([

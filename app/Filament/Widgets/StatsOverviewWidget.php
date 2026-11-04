@@ -18,17 +18,17 @@ class StatsOverviewWidget extends BaseStatsOverviewWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Artikel Terbit', Post::query()->where('status', PostStatus::Published)->count())
-                ->description('Total artikel: '.Post::query()->count())
+            Stat::make(__('Published Posts'), Post::query()->where('status', PostStatus::Published)->count())
+                ->description(__('Total posts: :count', ['count' => Post::query()->count()]))
                 ->color('success'),
-            Stat::make('Halaman Statis', Page::query()->count())
-                ->description('Halaman profil instansi')
+            Stat::make(__('Static Pages'), Page::query()->count())
+                ->description(__('Organization profile pages'))
                 ->color('primary'),
-            Stat::make('Pertanyaan Menunggu', Question::query()->where('status', QuestionStatus::Pending)->count())
-                ->description('Dijawab: '.Question::query()->where('status', QuestionStatus::Answered)->count())
+            Stat::make(__('Pending Questions'), Question::query()->where('status', QuestionStatus::Pending)->count())
+                ->description(__('Answered: :count', ['count' => Question::query()->where('status', QuestionStatus::Answered)->count()]))
                 ->color('warning'),
-            Stat::make('FAQ Aktif', Faq::query()->active()->count())
-                ->description('Pertanyaan sering diajukan')
+            Stat::make(__('Active FAQs'), Faq::query()->active()->count())
+                ->description(__('Frequently asked questions'))
                 ->color('info'),
         ];
     }

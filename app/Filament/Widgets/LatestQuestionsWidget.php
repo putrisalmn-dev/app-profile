@@ -16,32 +16,31 @@ class LatestQuestionsWidget extends TableWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Pertanyaan Masyarakat Terbaru';
-
     public function table(Table $table): Table
     {
         return $table
+            ->heading(__('Latest Public Questions'))
             ->query(fn (): Builder => Question::query()->with('topic')->latest()->limit(5))
             ->paginated(false)
             ->columns([
                 TextColumn::make('subject')
-                    ->label('Subjek')
+                    ->label(__('Subject'))
                     ->limit(45),
                 TextColumn::make('topic.name')
-                    ->label('Topik')
+                    ->label(__('Topic'))
                     ->badge(),
                 TextColumn::make('name')
-                    ->label('Penanya'),
+                    ->label(__('Asker')),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextColumn::make('created_at')
-                    ->label('Waktu Masuk')
+                    ->label(__('Submitted At'))
                     ->since(),
             ])
             ->recordActions([
                 Action::make('open')
-                    ->label('Detail / Jawab')
+                    ->label(__('View / Answer'))
                     ->url(fn (Question $record): string => QuestionResource::getUrl('edit', ['record' => $record])),
             ]);
     }

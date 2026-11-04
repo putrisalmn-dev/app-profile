@@ -15,11 +15,11 @@ enum SettingType: string implements HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::Text => 'Teks',
-            self::Textarea => 'Teks Panjang',
-            self::Image => 'Gambar',
-            self::Boolean => 'Ya/Tidak',
-            self::Json => 'JSON',
+            self::Text => __('Text'),
+            self::Textarea => __('Long Text'),
+            self::Image => __('Image'),
+            self::Boolean => __('Yes/No'),
+            self::Json => __('JSON'),
         };
     }
 }

@@ -35,39 +35,48 @@ class MenuResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBars3;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Konten CMS';
-
-    protected static ?string $modelLabel = 'Menu Navigasi';
-
-    protected static ?string $pluralModelLabel = 'Menu Navigasi';
-
     protected static ?int $navigationSort = 5;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('CMS Content');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Navigation Menu');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Navigation Menus');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('Informasi Menu')
+                Section::make(__('Menu Information'))
                     ->columns(3)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nama Menu')
+                            ->label(__('Menu Name'))
                             ->required()
                             ->maxLength(255),
                         Select::make('location')
-                            ->label('Lokasi')
+                            ->label(__('Location'))
                             ->options(MenuLocation::class)
                             ->required(),
                         Toggle::make('is_active')
-                            ->label('Aktif')
+                            ->label(__('Active'))
                             ->default(true)
                             ->inline(false),
                     ]),
-                Section::make('Item Menu')
+                Section::make(__('Menu Items'))
                     ->schema([
                         Repeater::make('rootItems')
                             ->relationship('rootItems')
-                            ->label('Daftar Item Menu')
+                            ->label(__('Menu Item List'))
                             ->orderColumn('sort_order')
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
@@ -75,7 +84,7 @@ class MenuResource extends Resource
                                 ...self::menuItemFields(),
                                 Repeater::make('children')
                                     ->relationship('children')
-                                    ->label('Sub-menu')
+                                    ->label(__('Submenu'))
                                     ->orderColumn('sort_order')
                                     ->collapsible()
                                     ->collapsed()
@@ -92,21 +101,21 @@ class MenuResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nama Menu')
+                    ->label(__('Menu Name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('location')
-                    ->label('Lokasi')
+                    ->label(__('Location'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('items_count')
-                    ->label('Jumlah Item')
+                    ->label(__('Items Count'))
                     ->counts('items'),
                 IconColumn::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->boolean(),
                 TextColumn::make('updated_at')
-                    ->label('Diperbarui')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable(),
             ])
@@ -145,11 +154,11 @@ class MenuResource extends Resource
     {
         return [
             TextInput::make('label')
-                ->label('Label')
+                ->label(__('Label'))
                 ->required()
                 ->maxLength(255),
             Select::make('type')
-                ->label('Tipe Tautan')
+                ->label(__('Link Type'))
                 ->options(MenuItemType::class)
                 ->default(MenuItemType::Custom)
                 ->live()
@@ -159,13 +168,13 @@ class MenuResource extends Resource
                 })
                 ->required(),
             TextInput::make('url')
-                ->label('URL')
-                ->placeholder('/tentang-kami atau https://...')
+                ->label(__('URL'))
+                ->placeholder(__('/about-us or https://...'))
                 ->visible(fn (Get $get): bool => self::normalizeType($get('type')) === MenuItemType::Custom)
                 ->required(fn (Get $get): bool => self::normalizeType($get('type')) === MenuItemType::Custom)
                 ->maxLength(255),
             Select::make('linkable_id')
-                ->label('Target Konten')
+                ->label(__('Target Content'))
                 ->options(function (Get $get): array {
                     $type = self::normalizeType($get('type'));
                     $modelClass = $type->modelClass();
@@ -181,7 +190,7 @@ class MenuResource extends Resource
                 ->visible(fn (Get $get): bool => self::normalizeType($get('type')) !== MenuItemType::Custom)
                 ->required(fn (Get $get): bool => self::normalizeType($get('type')) !== MenuItemType::Custom),
             Toggle::make('is_active')
-                ->label('Aktif')
+                ->label(__('Active'))
                 ->default(true),
         ];
     }

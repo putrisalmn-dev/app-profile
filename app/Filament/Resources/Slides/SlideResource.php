@@ -29,48 +29,57 @@ class SlideResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPresentationChartBar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Konten CMS';
-
-    protected static ?string $modelLabel = 'Slide Banner';
-
-    protected static ?string $pluralModelLabel = 'Slide Banner';
-
     protected static ?int $navigationSort = 6;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('CMS Content');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Banner Slide');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Banner Slides');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->label('Judul Slide')
+                    ->label(__('Slide Title'))
                     ->required()
                     ->maxLength(255),
                 TextInput::make('link_url')
-                    ->label('URL Tautan')
+                    ->label(__('Link URL'))
                     ->maxLength(255),
                 Textarea::make('description')
-                    ->label('Deskripsi')
+                    ->label(__('Description'))
                     ->rows(2)
                     ->columnSpanFull(),
                 FileUpload::make('image')
-                    ->label('Gambar Slide')
+                    ->label(__('Slide Image'))
                     ->required()
                     ->image()
                     ->disk('public')
                     ->directory('slides')
                     ->columnSpanFull(),
                 DatePicker::make('start_date')
-                    ->label('Tanggal Mulai Tayang'),
+                    ->label(__('Start Date')),
                 DatePicker::make('end_date')
-                    ->label('Tanggal Selesai Tayang')
+                    ->label(__('End Date'))
                     ->afterOrEqual('start_date'),
                 TextInput::make('sort_order')
-                    ->label('Urutan')
+                    ->label(__('Sort Order'))
                     ->numeric()
                     ->default(0)
                     ->required(),
                 Toggle::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->default(true),
             ]);
     }
@@ -82,25 +91,25 @@ class SlideResource extends Resource
             ->reorderable('sort_order')
             ->columns([
                 ImageColumn::make('image')
-                    ->label('Gambar')
+                    ->label(__('Image'))
                     ->disk('public'),
                 TextColumn::make('title')
-                    ->label('Judul')
+                    ->label(__('Title'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('start_date')
-                    ->label('Mulai')
+                    ->label(__('Start'))
                     ->date()
                     ->sortable(),
                 TextColumn::make('end_date')
-                    ->label('Selesai')
+                    ->label(__('End'))
                     ->date()
                     ->sortable(),
                 TextColumn::make('sort_order')
-                    ->label('Urutan')
+                    ->label(__('Sort Order'))
                     ->sortable(),
                 IconColumn::make('is_active')
-                    ->label('Aktif')
+                    ->label(__('Active'))
                     ->boolean(),
             ])
             ->filters([

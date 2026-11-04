@@ -26,20 +26,29 @@ class MediaResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Konten CMS';
-
-    protected static ?string $modelLabel = 'Media';
-
-    protected static ?string $pluralModelLabel = 'Media Library';
-
     protected static ?int $navigationSort = 4;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('CMS Content');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Media');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Media Library');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 FileUpload::make('file_path')
-                    ->label('Berkas')
+                    ->label(__('File'))
                     ->required()
                     ->disk('public')
                     ->directory('media')
@@ -47,7 +56,7 @@ class MediaResource extends Resource
                     ->maxSize(10240)
                     ->columnSpanFull(),
                 TextInput::make('alt_text')
-                    ->label('Teks Alternatif (Alt Text)')
+                    ->label(__('Alt Text'))
                     ->maxLength(255)
                     ->columnSpanFull(),
             ]);
@@ -59,27 +68,27 @@ class MediaResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageColumn::make('file_path')
-                    ->label('Pratinjau')
+                    ->label(__('Preview'))
                     ->disk('public'),
                 TextColumn::make('file_name')
-                    ->label('Nama Berkas')
+                    ->label(__('File Name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('mime_type')
-                    ->label('Tipe MIME')
+                    ->label(__('MIME Type'))
                     ->badge(),
                 TextColumn::make('file_size')
-                    ->label('Ukuran')
+                    ->label(__('Size'))
                     ->formatStateUsing(fn (?int $state): string => Number::fileSize((int) $state))
                     ->sortable(),
                 TextColumn::make('alt_text')
-                    ->label('Alt Text')
+                    ->label(__('Alt Text'))
                     ->limit(30),
                 TextColumn::make('uploader.name')
-                    ->label('Diunggah Oleh')
+                    ->label(__('Uploaded By'))
                     ->toggleable(),
                 TextColumn::make('created_at')
-                    ->label('Diunggah')
+                    ->label(__('Uploaded At'))
                     ->dateTime()
                     ->sortable(),
             ])

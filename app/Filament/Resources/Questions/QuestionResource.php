@@ -31,13 +31,22 @@ class QuestionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Pertanyaan Masyarakat';
-
-    protected static ?string $modelLabel = 'Pertanyaan';
-
-    protected static ?string $pluralModelLabel = 'Pertanyaan Masyarakat';
-
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('Public Questions');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Question');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Public Questions');
+    }
 
     public static function getNavigationBadge(): ?string
     {
@@ -55,44 +64,44 @@ class QuestionResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Identitas Penanya')
+                Section::make(__('Asker Identity'))
                     ->columns(3)
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nama Lengkap')
+                            ->label(__('Full Name'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
-                            ->label('Email')
+                            ->label(__('Email'))
                             ->email()
                             ->required()
                             ->maxLength(255),
                         TextInput::make('phone')
-                            ->label('No. Telepon / WhatsApp')
+                            ->label(__('Phone / WhatsApp Number'))
                             ->tel()
                             ->maxLength(30),
                     ]),
-                Section::make('Isi Pertanyaan')
+                Section::make(__('Question Details'))
                     ->columns(2)
                     ->schema([
                         Select::make('topic_id')
-                            ->label('Topik Pertanyaan')
+                            ->label(__('Question Topic'))
                             ->relationship('topic', 'name')
                             ->searchable()
                             ->preload()
                             ->required(),
                         Select::make('status')
-                            ->label('Status')
+                            ->label(__('Status'))
                             ->options(QuestionStatus::class)
                             ->default(QuestionStatus::Pending)
                             ->required(),
                         TextInput::make('subject')
-                            ->label('Subjek / Judul Pertanyaan')
+                            ->label(__('Question Subject'))
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
                         Textarea::make('body')
-                            ->label('Isi Pertanyaan')
+                            ->label(__('Question Body'))
                             ->required()
                             ->rows(5)
                             ->columnSpanFull(),
@@ -106,37 +115,37 @@ class QuestionResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('subject')
-                    ->label('Subjek')
+                    ->label(__('Subject'))
                     ->searchable()
                     ->sortable()
                     ->limit(45),
                 TextColumn::make('topic.name')
-                    ->label('Topik')
+                    ->label(__('Topic'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('name')
-                    ->label('Penanya')
+                    ->label(__('Asker'))
                     ->description(fn (Question $record): string => $record->email)
                     ->searchable(['name', 'email']),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge()
                     ->sortable(),
                 TextColumn::make('answers_count')
-                    ->label('Jawaban')
+                    ->label(__('Answers'))
                     ->counts('answers')
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Masuk Pada')
+                    ->label(__('Submitted At'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->options(QuestionStatus::class),
                 SelectFilter::make('topic')
-                    ->label('Topik')
+                    ->label(__('Topic'))
                     ->relationship('topic', 'name'),
             ])
             ->recordActions([
